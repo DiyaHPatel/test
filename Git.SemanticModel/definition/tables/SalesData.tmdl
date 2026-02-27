@@ -1,0 +1,81 @@
+table SalesData
+	lineageTag: f306a1c4-038c-4310-97d0-2abfdf4121ac
+
+	measure 'Total Sales' = sum(SalesData[Sales])
+		formatString: 0
+		lineageTag: defb1120-730e-4b2b-930d-1dfd5297332b
+
+	column Date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: cb09dc03-931f-47d1-9273-16311ab46c7e
+		summarizeBy: none
+		sourceColumn: Date
+
+		variation Variation
+			isDefault
+			relationship: 057ee63c-93e7-4b88-b43d-ed8b065d75e9
+			defaultHierarchy: LocalDateTable_0e333aa8-0ef6-4b5e-85e0-67758c9e2247.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Region
+		dataType: string
+		lineageTag: 15aa6d69-9f7e-46dd-aac9-8c8703207a9f
+		summarizeBy: none
+		sourceColumn: Region
+
+		annotation SummarizationSetBy = Automatic
+
+	column Product
+		dataType: string
+		lineageTag: afc3be36-d00a-4f1b-8f2f-ef5ccb09facd
+		summarizeBy: none
+		sourceColumn: Product
+
+		annotation SummarizationSetBy = Automatic
+
+	column Sales
+		dataType: int64
+		formatString: 0
+		lineageTag: d98440d1-c9be-4533-9cce-2abd6220c093
+		summarizeBy: sum
+		sourceColumn: Sales
+
+		annotation SummarizationSetBy = Automatic
+
+	column Profit
+		dataType: int64
+		formatString: 0
+		lineageTag: b35b5be5-b6c6-44ec-905d-d2842587743b
+		summarizeBy: sum
+		sourceColumn: Profit
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quantity
+		dataType: int64
+		formatString: 0
+		lineageTag: 67756c73-b9c0-434d-a70d-fb3ff3a330cb
+		summarizeBy: sum
+		sourceColumn: Quantity
+
+		annotation SummarizationSetBy = Automatic
+
+	partition SalesData = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("D:\Products\SalesData.xlsx"), null, true),
+				    Sheet1_Sheet = Source{[Item="Sheet1",Kind="Sheet"]}[Data],
+				    #"Promoted Headers" = Table.PromoteHeaders(Sheet1_Sheet, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Date", type date}, {"Region", type text}, {"Product", type text}, {"Sales", Int64.Type}, {"Profit", Int64.Type}, {"Quantity", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	changedProperty = Name
+
+	annotation PBI_ResultType = Table
+
