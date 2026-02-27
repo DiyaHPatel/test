@@ -4,6 +4,9 @@ table SalesData
 	measure 'Total Profit' = sum(SalesData[Profit])
 		formatString: 0
 		lineageTag: 204fb9d5-6fc6-413e-9c0b-8519977419f2
+	measure 'Total Sales' = sum(SalesData[Sales])
+		formatString: 0
+		lineageTag: defb1120-730e-4b2b-930d-1dfd5297332b
 
 	column Date
 		dataType: dateTime
